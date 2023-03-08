@@ -10,7 +10,9 @@
 - [tom]: there's a lot to cover, so let's get started
 
 
-- You can now use flake references in the old command line interface, e.g.
+## Release 2.13
+
+1. [dan] You can now use flake references in the old command line interface, e.g.
 
     ```
     # nix-build flake:nixpkgs -A hello
@@ -18,13 +20,10 @@
         '<nixpkgs>' -A hello
     # NIX_PATH=nixpkgs=flake:nixpkgs nix-build '<nixpkgs>' -A hello
     ```
-<!--
-- Instead of "antiquotation", the more common term string interpolation is now used consistently. Historical release notes were not changed.
--->
 
-- Error traces have been reworked to provide detailed explanations and more accurate error locations. A short excerpt of the trace is now shown by default when an error occurs.
+2. [dan] Error traces have been reworked to provide detailed explanations and more accurate error locations. A short excerpt of the trace is now shown by default when an error occurs.
 
-- Allow explicitly selecting outputs in a store derivation installable, just like we can do with other sorts of installables. For example,
+3. [dan] Allow explicitly selecting outputs in a store derivation installable, just like we can do with other sorts of installables. For example,
 
     ```
     # nix build /nix/store/gzaflydcr6sb3567hap9q6srzx8ggdgg-glibc-2.33-78.drv^dev
@@ -38,20 +37,14 @@
     
     does already.
 
-- ??? On Linux, nix develop now sets the personality for the development shell in the same way as the actual build of the derivation. This makes shells for i686-linux derivations work correctly on x86_64-linux.
-
-- You can now disable the global flake registry by setting the flake-registry configuration option to an empty string. The same can be achieved at runtime with --flake-registry "".
+4. [tom] You can now disable the global flake registry by setting the flake-registry configuration option to an empty string. The same can be achieved at runtime with --flake-registry "".
 
 
-# Release 2.14 (2023-02-28)
+## Release 2.14
 
-- A new function builtins.readFileType is available. It is similar to builtins.readDir but acts on a single file or directory.
+5. [tom] A new function builtins.readFileType is available. It is similar to builtins.readDir but acts on a single file or directory.
 
-<!--
-- In flakes, the .outPath attribute of a flake now always refers to the directory containing the flake.nix. This was not the case for when flake.nix was in a subdirectory of e.g. a Git repository. The root of the source of a flake in a subdirectory is still available in .sourceInfo.outPath.
--->
-
-- ??? In derivations that use structured attributes, you can now use unsafeDiscardReferences to disable scanning a given output for runtime dependencies:
+6. [tom] In derivations that use structured attributes, you can now use unsafeDiscardReferences to disable scanning a given output for runtime dependencies:
 
     ```
     __structuredAttrs = true;
@@ -61,10 +54,17 @@
     This is useful e.g. when generating self-contained filesystem images with their own embedded Nix store: hashes found inside such an image refer to the embedded store and not to the host's Nix store.
 
     This requires the discard-references experimental feature.
-    
-## Conclusion
 
-@garbas needs to find a script from last time
+## Outro
+
+### [tom] Nix team changes
+
+Introduce Nix team and John Ericson was [added](https://github.com/NixOS/nix/pull/7580).
+
+
+### [dan] Compare number of contributors between versions
+
+Scripts here -> https://hackmd.io/2i__EvtqTpu3EpkQ3F8R4A?edit
 
 rev range for
 -> 2.8.0: `69c6fb12eea414382f0b945c0d6c574c43c7c9a3...ad7c99ef20dff74a65d6c8ac2a2c42f538e0a1dd`
@@ -77,3 +77,22 @@ rev range for
 1
 -> 2.12.0: `08dcd22582d65e73f29df79b3765e76cea8f3314...0b25446f2e20233a32b67796eb776a2193866627`
 53
+
+### [tom] Maybe do performance comparision between versions
+
+@tomberek will ask penne to maybe do it
+
+```
+chrt -f 10 \
+    taskset -c 1 hyperfine --warmup 2 --runs 20 \
+    taskset -c 2,3 nix eval --raw --impure --expr 'with import <nixpkgs/nixos> {}; system'
+
+```
+
+### Final words
+
+- [dan] And that's the last feature for now. Yesterday was the release for 2.14 and is the last release scheduled for the year. This contains a large number of documentation and stability fixes. NixOS 22.11 release that just happened will have 2.11. The Nix repo itself will always have the latest releases available. As always, let us know if there are additional changes you are excitied about. Please "thumbs-up" any issues or PRs in the Nix repo to bring it to the attention of the Nix maintenance team.
+
+- [tom] These releases would not be possible without all the hard work done by the contributors. We also want to thank the users for bug reports, example usages, ideas, and for making the Nix community a better place. Thank you!
+
+[tom+dan]: **Wave!**
