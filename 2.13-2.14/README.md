@@ -1,5 +1,8 @@
 # What's new in Nix 2.13.0 - 2.14.0?
 
+[![hackmd-github-sync-badge](https://hackmd.io/j2_6RaXMRxikUopcvuHYJg/badge)](https://hackmd.io/j2_6RaXMRxikUopcvuHYJg)
+
+
 ## Release 2.13 (2023-01-17)
 
 <!--
