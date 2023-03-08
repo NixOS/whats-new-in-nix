@@ -1,0 +1,6 @@
+tmux new-session -d -s marketing -n demos
+tmux set status off
+tmux send-keys -t marketing:demos "./dbuild" Enter
+tmux send-keys -t marketing:demos "./drun" Enter
+tmux send-keys -t marketing:demos "C-l" 
+tmux attach -t marketing:demos
