@@ -2,12 +2,13 @@
 
 [![hackmd-github-sync-badge](https://hackmd.io/j2_6RaXMRxikUopcvuHYJg/badge)](https://hackmd.io/j2_6RaXMRxikUopcvuHYJg)
 
+## Intro
 
-## Release 2.13 (2023-01-17)
+- [dan]: Hi, I am Daniel Baker. Welcome to the next installment of the Nix release videos. This is a summary of several releases 2.13 through 2.14
+- [tom]: My name Tom Bereknyei and I'm exicited to provide an introduction to the new features and progress for the Nix project overall.
+- [dan]: I hope you will find this visual walkthrough informative. If we missed anything, please let us know in the comments below.
+- [tom]: there's a lot to cover, so let's get started
 
-<!--
-- The repeat and enforce-determinism options have been removed since they had been broken under many circumstances for a long time.
--->
 
 - You can now use flake references in the old command line interface, e.g.
 
