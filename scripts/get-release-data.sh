@@ -8,10 +8,64 @@ cleanup() {
   # script cleanup here
 }
 
-NIX_DIR=$1
+usage() {
+  cat <<EOF
+Usage: $(basename "${BASH_SOURCE[0]}") [-C <path>] [-f <int>] [-l <int>]
+
+Get release statistics for the NixOS/nix repo.
+
+Available options:
+
+-h, --help      Print this help and exit
+-C, --path      Path to run this script on. Default is current directory.
+-f, --first     First minor version to include. Default 7.
+-l, --last      Last minor version to include. Default 14.
+EOF
+  exit
+}
+
+parsedArgs=$(getopt --options hC:f:l: --longoptions help,path:,first:,last: -- "$@")
+validArgs=$?
+if [ "$validArgs" != "0" ]; then
+  usage
+fi
+
+nixDir=$PWD
+firstMinor=7
+lastMinor=14
+
+eval set -- "$parsedArgs"
+while true; do
+    case "$1" in
+        -h | --help)
+            usage
+            exit 0
+            ;;
+        -C | --path)
+            nixDir="$2";
+            shift 2
+            ;;
+        -f | --first)
+            firstMinor="$2";
+            shift 2
+            ;;
+        -l | --last)
+            lastMinor="$2";
+            shift 2
+            ;;
+        --)
+            shift;
+            break
+            ;;
+        *)
+            echo "Unexpected option: $1 - this should not happen."
+            exit 1
+            ;;
+    esac
+done
 
 allVersions=()
-for minorVersion in $(seq 7 14); do
+for minorVersion in $(seq $firstMinor $lastMinor); do
   allVersions+=("2.$minorVersion.0");
 done
 
@@ -24,9 +78,9 @@ for idx in $(seq 0 "$(( ${#allVersions[@]} - 2 ))"); do
   prevVersion=${allVersions[$idx]}
   currVersion=${allVersions[$idx + 1]}
   range="$prevVersion - $currVersion"
-  commits=$(git -C $NIX_DIR rev-list --no-merges --count $prevVersion..$currVersion)
-  pullRequests=$(git -C $NIX_DIR log --oneline $prevVersion..$currVersion | grep 'Merge pull request #' | wc -l)
-  numContributors=$(git -C $NIX_DIR shortlog $prevVersion..$currVersion -e -n | rg ":$" | wc -l)
+  commits=$(git -C $nixDir rev-list --no-merges --count $prevVersion..$currVersion)
+  pullRequests=$(git -C $nixDir log --oneline $prevVersion..$currVersion | grep 'Merge pull request #' | wc -l)
+  numContributors=$(git -C $nixDir shortlog $prevVersion..$currVersion -e -n | rg ":$" | wc -l)
   printf "$range|$commits|$pullRequests|$numContributors\n" >> release_stats.md
 done
 
@@ -35,7 +89,7 @@ column --separator "|" -td -N $columnNames -R $columnNames release_stats.md | te
 
 ### Get contributor names
 for idx in $(seq 0 "$(( ${#allVersions[@]} - 2 ))"); do
-  contributors=$(git -C $NIX_DIR shortlog $prevVersion..$currVersion -e -n | rg ":$")
+  contributors=$(git -C $nixDir shortlog $prevVersion..$currVersion -e -n | rg ":$")
   prevVersion=${allVersions[$idx]}
   currVersion=${allVersions[$idx + 1]}
   #echo "$contributors"
