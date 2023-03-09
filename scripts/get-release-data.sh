@@ -31,7 +31,7 @@ for idx in $(seq 0 "$(( ${#allVersions[@]} - 2 ))"); do
 done
 
 columnNames=$(head -1 release_stats.md | sed 's/|/,/g' | sed 's/ /_/g')
-column --separator "|" -td -N $columnNames -R $columnNames release_stats.md
+column --separator "|" -td -N $columnNames -R $columnNames release_stats.md | tee release_stats.md
 
 ### Get contributor names
 for idx in $(seq 0 "$(( ${#allVersions[@]} - 2 ))"); do
