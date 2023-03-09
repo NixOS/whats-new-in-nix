@@ -8,6 +8,8 @@ cleanup() {
   # script cleanup here
 }
 
+NIX_DIR=$1
+
 allVersions=()
 for minorVersion in $(seq 7 14); do
   allVersions+=("2.$minorVersion.0");
@@ -22,9 +24,9 @@ for idx in $(seq 0 "$(( ${#allVersions[@]} - 2 ))"); do
   prevVersion=${allVersions[$idx]}
   currVersion=${allVersions[$idx + 1]}
   range="$prevVersion - $currVersion"
-  commits=$(git rev-list --no-merges --count $prevVersion..$currVersion)
-  pullRequests=$(git log --oneline $prevVersion..$currVersion | grep 'Merge pull request #' | wc -l)
-  numContributors=$(git shortlog $prevVersion..$currVersion -e -n | rg ":$" | wc -l)
+  commits=$(git -C $NIX_DIR rev-list --no-merges --count $prevVersion..$currVersion)
+  pullRequests=$(git -C $NIX_DIR log --oneline $prevVersion..$currVersion | grep 'Merge pull request #' | wc -l)
+  numContributors=$(git -C $NIX_DIR shortlog $prevVersion..$currVersion -e -n | rg ":$" | wc -l)
   printf "$range|$commits|$pullRequests|$numContributors\n" >> release_stats.md
 done
 
@@ -33,7 +35,7 @@ column --separator "|" -td -N $columnNames -R $columnNames release_stats.md
 
 ### Get contributor names
 for idx in $(seq 0 "$(( ${#allVersions[@]} - 2 ))"); do
-  contributors=$(git shortlog $prevVersion..$currVersion -e -n | rg ":$")
+  contributors=$(git -C $NIX_DIR shortlog $prevVersion..$currVersion -e -n | rg ":$")
   prevVersion=${allVersions[$idx]}
   currVersion=${allVersions[$idx + 1]}
   #echo "$contributors"
