@@ -14,6 +14,9 @@ Usage: $(basename "${BASH_SOURCE[0]}") [-C <path>] [-f <int>] [-l <int>]
 
 Get release statistics for the NixOS/nix repo.
 
+You want to run this on the NixOS/nix repo so either copy the script over or
+use the -C/--path parameter.
+
 Available options:
 
 -h, --help      Print this help and exit
