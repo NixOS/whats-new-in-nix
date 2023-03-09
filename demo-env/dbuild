@@ -1,1 +1,1 @@
-docker build -t "nixos-marketing:Dockerfile" .
+docker build -t "nixos-marketing:Dockerfile" ..
