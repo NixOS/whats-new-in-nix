@@ -1,0 +1,1 @@
+docker run -it "nixos-marketing:Dockerfile"
